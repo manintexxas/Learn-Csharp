@@ -17,9 +17,10 @@ Repository ini berisi kumpulan *mini project*, latihan logika, dan catatan imple
 
 Tabel di bawah diperbarui setiap kali ada penambahan *mini project* baru.
 
-| Day | Project Name | Konsep Utama / Key Features | Link Folder |
-| :---: | :--- | :--- | :---: |
-| **01** | **Person Registration App** | Constructor, Static Keyword, Private Setter, Extension Methods, Enkapsulasi | [DailyProject01](./Day01-PersonRegistration) |
+| Day | Project Name | Konsep Utama / Key Features | Status | Link Folder |
+| :---: | :--- | :--- | :---: | :---: |
+| **01** | **Person Registration App** | Constructor, Static Keyword, Private Setter, Extension Methods, Enkapsulasi | Completed | [Day01-PersonRegistration](./Day01-PersonRegistration) |
+| **02** | **MiniRpg Engine** | Abstract Class, Virtual/Override, Encapsulation (`Math.Clamp`), Inheritances, JSON Payload | 🟡 On Progress | [Day02-RpgEngine](./Day02-RpgEngine) |
 <!-- Tambahkan baris baru di bawah ini setiap ada task baru -->
 
 ---
@@ -31,30 +32,11 @@ learn-csharp/
 ├── learn-csharp.sln                   <-- Solution file
 ├── README.md                          <-- Dokumentasi utama
 ├── .gitignore
-└── Day01-PersonRegistration/          <-- Mini project Day 01
+├── Day01-PersonRegistration/          <-- Mini project Day 01
+│   ├── Program.cs
+│   └── Day01-PersonRegistration.csproj
+└── Day02-RpgEngine/                   <-- Mini project Day 02 (Ongoing)
+    ├── RpgEngine.csproj
     ├── Program.cs
-    └── Day01-PersonRegistration.csproj
-```
-
----
-
-## 🚀 Cara Menjalankan Project
-
-1. **Clone Repository**
-   ```bash
-   git clone [https://github.com/username-kamu/learn-csharp.git](https://github.com/username-kamu/learn-csharp.git)
-   cd learn-csharp
-   ```
-
-2. **Jalankan Project Spesifik**
-   Gunakan flag `--project` diikuti nama folder project yang ingin dijalankan:
-   ```bash
-   # Menjalankan project Day 01
-   dotnet run --project Day01-PersonRegistration
-   ```
-
----
-
-## 📝 Catatan Perkembangan
-
-* **Day 01:** Mempelajari enkapsulasi objek `Person` dengan *private constructor*, pembuatan method validasi via *extension methods*, dan menghitung total registrasi menggunakan *static property*.
+    ├── BaseCharacter.cs
+    └── README.md
