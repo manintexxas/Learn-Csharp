@@ -30,7 +30,7 @@ Kelas abstrak dasar yang membungkus semua atribut dan perilaku umum karakter (He
 
 ### 2. Peta Arsitektur & Kelas (`RpgEngine`)
 
-- **`CharacterDto`** : Model penampung data mentah masukan JSON dari `Program.cs`.
+- **`CharacterDto`** *(Pending)* : Model penampung data mentah masukan JSON dari `Program.cs`.
 - **`Hero` & `Monster`** *(Pending)* : Kelas turunan yang meng-override `UniqueSkill` dengan efek spesifik.
 - **`BattleSystem`** *(Pending)* : *Engine* simulasi pertarungan bergantian (*turn-based*) memanfaatkan kata kunci `ref` dan `out`.
 - **`CharacterFactory`** *(Pending)* : Mengimplementasikan *Factory Pattern* berbasis `static` untuk membuat objek karakter dari DTO.
