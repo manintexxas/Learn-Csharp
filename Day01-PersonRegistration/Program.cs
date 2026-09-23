@@ -6,8 +6,16 @@ using Humanizer;
 
 namespace SmallApp;
 
+/// <summary>
+/// Kelas utama program yang berfungsi sebagai titik masuk (entry point) aplikasi CLI.
+/// Bertanggung jawab untuk menyimulasikan skenario pendaftaran pengguna (sukses dan gagal).
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Eksekusi utama program untuk menguji alur validasi dan registrasi data pengguna.
+    /// </summary>
+    /// <param name="args">Argumen baris perintah (tidak digunakan dalam simulasi ini).</param>
     public static void Main(string[] args)
     {
         // Pengujian 1: Pendaftaran dengan data valid
@@ -53,39 +61,46 @@ public class Program
 }
 
 /// <summary>
-/// Model DTO untuk menerima data masukan registrasi pengguna.
+/// Data Transfer Object (DTO) yang menampung data mentah masukan registrasi dari pengguna sebelum divalidasi.
 /// </summary>
+/// <remarks>
+/// Kelas ini mengizinkan nilai <c>null</c> untuk mengantisipasi masukan pengguna yang tidak lengkap dari antarmuka/CLI.
+/// </remarks>
 public class RegisterPersonRequest
 {
     /// <summary>
-    /// Nama lengkap pengguna.
+    /// Nama lengkap pengguna dalam format teks mentah.
     /// </summary>
     public string? FullName { get; set; }
 
     /// <summary>
-    /// Umur pengguna dalam format teks (digit).
+    /// Usia pengguna yang dimasukkan dalam bentuk teks digit (misal: "25").
     /// </summary>
     public string? RawAge { get; set; }
 
     /// <summary>
-    /// Alamat surel pengguna.
+    /// Alamat surel (email) pengguna dalam format teks mentah.
     /// </summary>
     public string? Email { get; set; }
 }
 
 /// <summary>
-/// Kumpulan method ekstensi untuk validasi dan transformasi string.
+/// Koleksi metode ekstensi untuk mempermudah validasi teks, konversi angka, dan pemformatan nama.
 /// </summary>
 public static class StringExtensions
 {
     /// <summary>
-    /// Mengecek apakah teks bernilai null, kosong, atau hanya berisi spasi.
+    /// Memeriksa apakah sebuah variabel teks bernilai <c>null</c>, kosong, atau hanya berisi karakter spasi.
     /// </summary>
+    /// <param name="text">Teks yang akan diperiksa (boleh null).</param>
+    /// <returns><c>true</c> jika teks kosong/null; sebaliknya <c>false</c>.</returns>
     public static bool IsNull(this string? text) => string.IsNullOrWhiteSpace(text);
 
     /// <summary>
-    /// Validasi format alamat email menggunakan sintaks MailAddress.
+    /// Memvalidasi kelayakan format alamat email menggunakan kelas standar <see cref="MailAddress"/>.
     /// </summary>
+    /// <param name="text">Teks alamat email yang akan diuji.</param>
+    /// <returns><c>true</c> jika format email sesuai standar umum; sebaliknya <c>false</c>.</returns>
     public static bool IsValidEmail(this string? text)
     {
         if (text.IsNull()) { return false; }
@@ -99,8 +114,10 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Mengubah format teks menjadi Title Case (huruf kapital di awal kata).
+    /// Mengubah teks menjadi format Title Case (setiap awal kata menggunakan huruf kapital).
     /// </summary>
+    /// <param name="text">Teks nama mentah (misal: "john DOE").</param>
+    /// <returns>Teks yang sudah dirapikan (misal: "John Doe"), atau string kosong jika masukan null.</returns>
     public static string ToTitleCase(this string? text)
     {
         if (text.IsNull()) { return string.Empty; }
@@ -110,8 +127,10 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Mengonversi teks berisi angka menjadi tipe data integer.
+    /// Mengonversi teks berisi karakter angka menjadi tipe data numerik integer.
     /// </summary>
+    /// <param name="text">Teks angka mentah.</param>
+    /// <returns>Nilai angka dalam tipe <see cref="int"/>. Mengembalikan angka <c>0</c> jika gagal dikonversi.</returns>
     public static int TextToNumber(this string? text)
     {
         if (text.IsNull()) { return 0; }
@@ -125,20 +144,42 @@ public static class StringExtensions
 }
 
 /// <summary>
-/// Domain model yang merepresentasikan entitas Pengguna/Person.
+/// Domain model utama yang merepresentasikan pengguna sah di dalam sistem.
 /// </summary>
+/// <remarks>
+/// Instansiasi kelas ini dibatasi melalui metode pabrik <see cref="TryCreate"/> 
+/// guna memastikan objek <see cref="Person"/> yang tercipta selalu berada dalam kondisi valid.
+/// </remarks>
 public class Person
 {
+    /// <summary>
+    /// Identitas unik global (GUID) yang dibuat otomatis untuk setiap pengguna terdaftar.
+    /// </summary>
     public Guid Id { get; private set; }
+
+    /// <summary>
+    /// Nama lengkap pengguna yang sudah dirapikan ke format Title Case.
+    /// </summary>
     public string FullName { get; private set; }
+
+    /// <summary>
+    /// Usia pengguna yang sah dalam hitungan tahun.
+    /// </summary>
     public int Age { get; private set; }
+
+    /// <summary>
+    /// Alamat email terverifikasi milik pengguna.
+    /// </summary>
     public string Email { get; private set; }
 
     /// <summary>
-    /// Menyimpan total registrasi pengguna yang berhasil dibuat selama runtime.
+    /// Menghitung total pendaftaran pengguna yang berhasil dilakukan selama aplikasi berjalan.
     /// </summary>
     public static int TotalRegister { get; private set; } = 0;
 
+    /// <summary>
+    /// Konstruktor privat untuk mencegah pembuatan objek langsung dari luar tanpa melalui tahap validasi.
+    /// </summary>
     private Person(string fullName, int age, string email)
     {
         Id = Guid.NewGuid();
@@ -148,12 +189,12 @@ public class Person
     }
 
     /// <summary>
-    /// Validasi request dan instansiasi objek Person baru jika valid.
+    /// Mencoba memvalidasi data masukan dan membuat objek <see cref="Person"/> baru jika seluruh syarat terpenuhi.
     /// </summary>
-    /// <param name="request">Data permintaan pendaftaran pengguna.</param>
-    /// <param name="person">Output objek Person jika registrasi berhasil.</param>
-    /// <param name="errorMessage">Pesan error jika terdapat kegagalan validasi.</param>
-    /// <returns>Nilai true jika berhasil dibuat, sebaliknya false.</returns>
+    /// <param name="request">Objek berisi masukan data mentah registrasi.</param>
+    /// <param name="person">Variabel output yang memuat objek <see cref="Person"/> jika registrasi berhasil; bernilai <c>null</c> jika gagal.</param>
+    /// <param name="errorMessage">Variabel output berisi pesan penjelasan jika terjadi kegagalan validasi.</param>
+    /// <returns><c>true</c> jika seluruh data valid dan objek berhasil dibuat; sebaliknya <c>false</c>.</returns>
     public static bool TryCreate(RegisterPersonRequest? request, out Person? person, out string? errorMessage)
     {
         if (request == null)
@@ -195,8 +236,9 @@ public class Person
     }
 
     /// <summary>
-    /// Mengubah data objek Person menjadi string berformat JSON.
+    /// Mengonversi properti objek <see cref="Person"/> menjadi format teks JSON berseri.
     /// </summary>
+    /// <returns>Teks string berformat JSON rapi (indented).</returns>
     public string ToJson()
     {
         return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });

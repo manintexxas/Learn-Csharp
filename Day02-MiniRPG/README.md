@@ -1,55 +1,69 @@
-# ⚔️ Day 02 - MiniRpg Engine (Ongoing)
+# ⚔️ Day 02 - MiniRPG Engine 🚧 (Work in Progress)
 
-MiniRpg Engine adalah proyek latihan pembuatan *Core Engine* game Turn-Based RPG berbasis konsol menggunakan C# (.NET 8). Proyek ini berfokus pada penerapan konsep Object-Oriented Programming (OOP) tingkat menengah, seperti *Abstract Class*, *Inheritance*, *Polymorphism*, serta penggunaan *Design Pattern* dasar.
-
----
-
-## 📦 Library & Dependency
-
-Proyek ini menggunakan dependensi dan modul bawaan .NET berikut:
-
-- **`System.Text.Json`**
-  - **Fungsi:** Deserialisasi *payload* JSON masukan menjadi objek DTO (`CharacterDto`) untuk *spawning* karakter secara dinamis.
-
-- **`System.Math`**
-  - **Fungsi:** Menggunakan metode `Math.Clamp` untuk validasi dan proteksi rentang nilai poin kesehatan (`HealthPoint`) secara aman.
+> **Catatan Proyek (Overtime Project):**  
+> Proyek ini berkembang menjadi proyek multi-tahap. Pengembangan diawali dari abstraksi entitas dasar karakter (Hari 1) hingga perluasan sistem efek status secara dinamis menggunakan interface dan komposisi objek (Hari 2).
 
 ---
 
-## 🛠️ Ringkasan Fitur & Abstraksi Utama
+## 🎯 Gambaran Umum Proyek
 
-### 1. Base Character (`BaseCharacter`)
-Kelas abstrak dasar yang membungkus semua atribut dan perilaku umum karakter (Hero / Monster):
+**MiniRPG Engine** adalah simulasi *Core Engine* permainan bertema *Turn-Based RPG* berbasis konsol C# (.NET 8). Proyek ini dirancang untuk melatih dan menguji penerapan tingkat menengah dari **Object-Oriented Programming (OOP)**, pemisahan logika (*Separation of Concerns*), serta pengujian unit (*Unit Testing*).
 
-- `HealthPoint` : Menggunakan `Math.Clamp` pada *setter* `protected` untuk memastikan nilai HP selalu berada dalam rentang `0` hingga `MaxHealth`.
-- `IsAlive` : *Read-only property* untuk mengecek status hidup karakter berdasarkan HP (`HealthPoint > 0`).
-- `TakeDamage` & `Heal` : Method `virtual` yang memproses perubahan HP dan mengembalikan status keberlangsungan hidup karakter.
-- `UniqueSkill` : Method `abstract` yang wajib diimplementasikan oleh setiap kelas spesifik turunan.
+Aplikasi ini menerima data konfigurasi karakter melalui format **JSON**, memprosesnya secara dinamis, serta menguji status dan efek pertarungan (seperti pendarahan, regenerasi, dan stun) selama pertarungan berlangsung.
 
 ---
 
-### 2. Peta Arsitektur & Kelas (`RpgEngine`)
+## 💡 Konsep OOP & Arsitektur Utama
 
-- **`CharacterDto`** *(Pending)* : Model penampung data mentah masukan JSON dari `Program.cs`.
-- **`Hero` & `Monster`** *(Pending)* : Kelas turunan yang meng-override `UniqueSkill` dengan efek spesifik.
-- **`BattleSystem`** *(Pending)* : *Engine* simulasi pertarungan bergantian (*turn-based*) memanfaatkan kata kunci `ref` dan `out`.
-- **`CharacterFactory`** *(Pending)* : Mengimplementasikan *Factory Pattern* berbasis `static` untuk membuat objek karakter dari DTO.
-
----
-
-## 🚧 Status Pengerjaan (Progress Tracker)
-
-- [x] **Langkah 1:** Abstraksi Dasar `BaseCharacter.cs` & validasi nilai properti (`Math.Clamp`).
-- [ ] **Langkah 2:** Pembuatan entitas turunan `Hero.cs` dan `Monster.cs`.
-- [ ] **Langkah 3:** Implementasi sistem alur pertarungan `BattleSystem.cs`.
-- [ ] **Langkah 4:** Integrasi *Factory Pattern* `CharacterFactory.cs` dan pengolahan JSON di `Program.cs`.
+Proyek ini mendemonstrasikan hubungan antarkelas menggunakan dua prinsip utama OOP:
+1. **IS-A (Inheritance / Pewarisan):** `Hero` dan `Monster` adalah turunan dari `BaseCharacter`. Begitu pula `BleedEffect`, `RegenEffect`, dan `StunEffect` yang merupakan turunan dari `StatusEffect`.
+2. **HAS-A (Composition / Komposisi):** `BaseCharacter` memiliki pengelola efek (`StatusManager`), yang menampung kumpulan efek (`StatusEffect`) aktif pada karakter tersebut.
 
 ---
 
-## 🚀 Cara Menjalankan
+## 🗓️ Catatan Perkembangan (Development History)
 
-1. Pastikan [.NET SDK 8.0](https://dotnet.microsoft.com/) sudah terpasang.
-2. Jalankan perintah berikut dari direktori root repositori:
+### 🔹 Hari 1: Fondasi Entitas & Abstraksi (`BaseCharacter`)
+* **Abstraksi & Encapsulation:** Membuat *abstract class* `BaseCharacter` sebagai cetak biru seluruh karakter (Hero/Monster).
+* **Proteksi Nilai Sakelar (`Math.Clamp`):** Memastikan nilai kesehatan (`HealthPoint`) tidak pernah bernilai negatif atau melebihi batas maksimum (`MaxHealth`).
+* **Siklus Hidup Karakter:** Implementasi *read-only property* `IsAlive` serta metode *virtual* `TakeDamage()` dan `Heal()`.
+* **Polimorfisme:** Mendeklarasikan *abstract method* `UniqueSkill()` yang wajib diimplementasikan oleh kelas turunan.
+
+### 🔹 Hari 2: Sistem Efek Status (`Interface` & Komposisi)
+* **Penerapan Interface (`IUseable`):** Mendefinisikan kontrak perilaku untuk item atau efek yang dapat diaplikasikan/digunakan pada karakter.
+* **Efek Berkelanjutan (Status Effect System):**
+  * `StatusEffect` *(Abstract Base)*: Menjadi dasar seluruh efek status yang memiliki durasi giliran (*turns*).
+  * `BleedEffect` *(Damage Over Time)*: Mengurangi HP karakter di setiap giliran.
+  * `RegenEffect` *(Heal Over Time)*: Memulihkan HP karakter di setiap giliran.
+  * `StunEffect` *(Crowd Control)*: Menyebabkan karakter kehilangan giliran beraksi.
+* **Pengelola Efek (`StatusManager`):** Mengatur penambahan, pembaruan durasi, eksekusi efek, dan pembersihan efek yang telah habis masa berlakunya pada karakter.
+* **Pengujian Unit (`Test/`):** Penambahan *Unit Test* (`BaseCharacterTest.cs` dan `EffectTest.cs`) untuk memverifikasi logika HP dan efek status berjalan dengan tepat.
+
+---
+
+## 🚧 Progress Tracker & Daftar Status (Pending Features)
+
+- [x] **Hari 1 — Abstraksi Dasar:** `BaseCharacter.cs` & validasi proteksi HP (`Math.Clamp`).
+- [x] **Hari 2 — Sistem Efek Status:** `IUseable.cs`, `StatusEffect.cs`, `StatusManager.cs`, serta kelas efek spesifik (`Bleed`, `Regen`, `Stun`).
+- [x] **Hari 2 — Pengujian Unit:** Pembuatan pengujian otomatis di direktori `Test/`.
+- [ ] **Pending Step 1 — Concrete Classes:** Implementasi kelas turunan konkret `Hero.cs` dan `Monster.cs` beserta logika `UniqueSkill()`.
+- [ ] **Pending Step 2 — DTO & JSON Spawning:** Pembuatan `CharacterDto.cs` dan integrasi `System.Text.Json` di `Program.cs` untuk membaca masukan JSON.
+- [ ] **Pending Step 3 — Factory Pattern:** Pembuatan `CharacterFactory.cs` untuk memuat entitas karakter secara otomatis dari DTO.
+- [ ] **Pending Step 4 — Turn-Based Battle Engine:** Pembuatan `BattleSystem.cs` untuk mengelola alur giliran bertarung antar karakter hingga salah satu kalah.
+
+---
+
+## 📦 Pustaka & Dependensi
+
+* **`System.Text.Json`** *(Untuk integrasi lanjutan)*: Membaca dan mengonversi masukan teks JSON menjadi data DTO karakter.
+* **`System.Math`**: Digunakan pada metode `Math.Clamp` guna menjaga konsistensi kalkulasi statistik karakter.
+
+---
+
+## 🚀 Cara Menjalankan & Pengujian
+
+### 1. Menjalankan Simulasi Utama
+Pastikan Anda berada di direktori root repositori, lalu jalankan perintah:
 
 ```bash
-dotnet run --project Day02-RpgEngine
+dotnet run --project lab/Day02-MiniRPG

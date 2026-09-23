@@ -1,41 +1,53 @@
 using System;
-using System.ComponentModel;
-using System.Data.Common;
-using System.Runtime.CompilerServices;
 
 namespace RpgEngine
 {
     /// <summary>
-    /// Kelas abstrak dasar yang mewakili entitas karakter dalam Game RPG.
-    /// Menyediakan atribut dasar, enkapsulasi status kesehatan, serta aksi dasar (Serang, Heal, Skill).
+    /// Kelas abstrak dasar yang berfungsi sebagai cetak biru (blueprint) untuk setiap entitas karakter dalam Game RPG.
     /// </summary>
+    /// <remarks>
+    /// Kelas ini mengelola atribut dasar seperti nama, kesehatan (<see cref="HealthPoint"/>), kekuatan serangan (<see cref="AttackPower"/>),
+    /// serta integrasi dengan sistem efek status (<see cref="StatusManager"/>).
+    /// </remarks>
     public abstract class BaseCharacter
     {
         private int _healthPoint;
 
         /// <summary>
-        /// Menandakan apakah karakter masih hidup berdasarkan nilai HealthPoint.
+        /// Menandakan apakah karakter masih dalam kondisi hidup atau aktif bertarung.
         /// </summary>
+        /// <value>
+        /// Bernilai <c>true</c> jika <see cref="HealthPoint"/> lebih besar dari 0; sebaliknya <c>false</c>.
+        /// </value>
         public bool IsAlive => HealthPoint > 0;
 
         /// <summary>
-        /// Nama dari karakter.
+        /// Nama identitas unik milik karakter.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Batas maksimum HealthPoint yang dimiliki karakter.
+        /// Batas maksimum poin kesehatan (<see cref="HealthPoint"/>) yang dapat dimiliki karakter.
         /// </summary>
         public int MaxHealth { get; protected set; }
 
         /// <summary>
-        /// Nilai kekuatan serangan dasar karakter.
+        /// Nilai dasar kekuatan serangan fisik karakter.
         /// </summary>
         public int AttackPower { get; protected set; }
 
         /// <summary>
-        /// Poin kesehatan karakter saat ini. Nilai dibatasi secara otomatis antara 0 hingga MaxHealth.
+        /// Pengelola kumpulan efek status (seperti pendarahan, stun, atau regenerasi) yang sedang aktif pada karakter.
         /// </summary>
+        public StatusManager StatusManager { get; } = new StatusManager();
+
+        /// <summary>
+        /// Poin kesehatan (HP) karakter saat ini.
+        /// </summary>
+        /// <remarks>
+        /// Nilai ini dienkapsulasi dan dilindungi menggunakan <see cref="Math.Clamp(int, int, int)"/> 
+        /// agar tidak pernah bernilai negatif (kurang dari 0) atau melebihi batas <see cref="MaxHealth"/>.
+        /// </remarks>
         public int HealthPoint
         {
             get => _healthPoint;
@@ -43,13 +55,13 @@ namespace RpgEngine
         }
 
         /// <summary>
-        /// Menginisialisasi nilai dasar untuk atribut karakter.
+        /// Inisialisasi properti dasar dan aturan validasi saat membuat objek karakter baru.
         /// </summary>
-        /// <param name="name">Nama karakter (tidak boleh null atau spasi).</param>
-        /// <param name="maxHealth">Batas HP maksimum (harus lebih dari 0).</param>
-        /// <param name="attackPower">Kekuatan serangan dasar (tidak boleh negatif).</param>
-        /// <exception cref="ArgumentException">Dilempar jika nama bernilai null atau spasi.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Dilempar jika maxHealth/attackPower berada di luar jangkauan yang valid.</exception>
+        /// <param name="name">Nama unik karakter (tidak boleh kosong atau hanya berisi spasi).</param>
+        /// <param name="maxHealth">Jumlah poin kesehatan maksimum awal (harus bernilai lebih dari 0).</param>
+        /// <param name="attackPower">Jumlah poin kekuatan serangan dasar (tidak boleh bernilai negatif/minus).</param>
+        /// <exception cref="ArgumentException">Dilempar jika variabel <paramref name="name"/> bernilai <c>null</c>, kosong, atau hanya spasi.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Dilempar jika nilai <paramref name="maxHealth"/> kurang dari atau sama dengan 0, atau jika <paramref name="attackPower"/> kurang dari 0.</exception>
         protected BaseCharacter(string? name, int maxHealth, int attackPower)
         {
             if (string.IsNullOrWhiteSpace(name)) 
@@ -74,39 +86,78 @@ namespace RpgEngine
         }
 
         /// <summary>
-        /// Skill unik yang wajib diimplementasikan oleh setiap kelas turunan.
+        /// Eksekusi kemampuan khusus (*Unique Skill*) karakter terhadap target tertentu.
         /// </summary>
-        /// <param name="Target">Karakter yang menjadi target skill.</param>
+        /// <param name="Target">Objek karakter yang menjadi sasaran efek atau serangan dari kemampuan ini.</param>
+        /// <remarks>
+        /// Metode ini bersifat <c>abstract</c> dan **wajib** diimplementasikan secara spesifik oleh kelas turunan (misal: <c>Hero</c> atau <c>Monster</c>).
+        /// </remarks>
         public abstract void UniqueSkill(BaseCharacter Target); 
 
         /// <summary>
-        /// Menerima damage dan menguraikan poin kesehatan karakter.
+        /// Mengurangi poin kesehatan karakter berdasarkan nilai damage yang diterima.
         /// </summary>
-        /// <param name="damage">Jumlah damage yang diterima.</param>
-        /// <returns>Mengembalikan status apakah karakter masih hidup setelah menerima damage.</returns>
+        /// <param name="damage">Jumlah poin kerusakan yang diberikan kepada karakter.</param>
+        /// <returns>
+        /// Bernilai <c>true</c> jika karakter masih bertahan hidup setelah menerima kerusakan; sebaliknya <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Pengurangan HP hanya diproses jika karakter dalam kondisi hidup (<see cref="IsAlive"/>). Nilai damage negatif akan otomatis dikonversi menjadi 0.
+        /// </remarks>
         public virtual bool TakeDamage(int damage)
         {
             if (IsAlive)
             {
-                HealthPoint -= damage;
+                HealthPoint -= Math.Max(0, damage);
             }
 
             return IsAlive;
         }
 
         /// <summary>
-        /// Memulihkan kesehatan karakter berdasarkan jumlah tertentu.
+        /// Memulihkan poin kesehatan karakter berdasarkan jumlah yang ditentukan.
         /// </summary>
-        /// <param name="amount">Jumlah pemulihan HP.</param>
-        /// <returns>Mengembalikan status apakah karakter masih hidup.</returns>
+        /// <param name="amount">Jumlah poin pemulihan kesehatan (HP) yang diberikan.</param>
+        /// <returns>
+        /// Bernilai <c>true</c> jika karakter masih dalam kondisi hidup; sebaliknya <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Pemulihan HP hanya berlaku jika karakter masih hidup. Nilai pemulihan tidak akan membuat <see cref="HealthPoint"/> melebihi <see cref="MaxHealth"/>.
+        /// </remarks>
         public virtual bool Heal(int amount)
         {
             if (IsAlive)
             {
-                HealthPoint += amount;
+                HealthPoint += Math.Max(0, amount);
             }
 
             return IsAlive;
+        }
+
+        /// <summary>
+        /// Menambahkan efek status baru (seperti Bleed, Stun, atau Regen) ke dalam pengelola efek karakter.
+        /// </summary>
+        /// <param name="effect">Instansi dari efek status yang akan diterapkan pada karakter.</param>
+        /// <exception cref="ArgumentNullException">Dilempar jika parameter <paramref name="effect"/> bernilai <c>null</c>.</exception>
+        public void ApplyStatus(StatusEffect effect)
+        {
+            if (effect == null)
+            {
+                throw new ArgumentNullException(nameof(effect), "Efek status tidak boleh null.");
+            }
+
+            StatusManager.AddEffect(effect);
+        }
+
+        /// <summary>
+        /// Memperbarui dan mengeksekusi seluruh efek status yang aktif pada awal giliran (*turn*) karakter.
+        /// </summary>
+        /// <remarks>
+        /// Metode ini biasa dipanggil oleh siklus mesin pertarungan (*Battle Engine*) sebelum karakter melakukan tindakan.
+        /// </remarks>
+        public void OnTurnUpdate()
+        {
+            StatusManager.UpdateTurn(this);
         }
     }
 }

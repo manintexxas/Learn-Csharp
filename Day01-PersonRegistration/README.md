@@ -1,54 +1,47 @@
-# 👤 Day 01 - Person Registration App
+# 📝 Day 01 - Person Registration Module
 
-Aplikasi konsol sederhana menggunakan C# (.NET 8) untuk melakukan validasi dan registrasi data entitas pengguna (`Person`). Proyek ini berfokus pada penerapan *Extension Methods*, enkapsulasi domain model dengan *private constructor*, serta pola penciptaan objek aman (`TryCreate`).
-
----
-
-## 📦 Library & Dependency
-
-Proyek ini menggunakan library dan namespace pendukung berikut:
-
-- **[Humanizer](https://github.com/Humanizr/Humanizer)** (`Humanizer.Core`)
-  - **Fungsi:** Manipulasi dan penataan format teks/string agar lebih ramah dibaca (*human-friendly*).
-  - **Cara Install:**
-    ```bash
-    dotnet add package Humanizer.Core
-    ```
-
-- **`System.Text.Json`**
-  - **Fungsi:** Library bawaan .NET untuk serialisasi objek `Person` menjadi format JSON.
-
-- **`System.Net.Mail`**
-  - **Fungsi:** Menggunakan kelas `MailAddress` untuk validasi keabsahan format email.
+Aplikasi konsol C# sederhana yang dirancang untuk memproses, memvalidasi, dan merapikan data registrasi pengguna sebelum disimpan ke dalam domain model aplikasi.
 
 ---
 
-## 🛠️ Ringkasan Fitur & Fungsi
+## 🎯 Gambaran Umum Proyek
 
-### 1. String Extensions (`StringExtensions`)
-Kumpulan *extension method* pembantu untuk validasi dan transformasi teks:
+Modul ini menyelesaikan masalah data masukan pengguna yang sering kali tidak konsisten (misalnya penulisan nama yang berantakan, format email yang salah, atau angka usia yang tidak masuk akal). 
 
-- `IsNull` : Mengecek apakah teks bernilai null, kosong, atau spasi.
-- `IsValidEmail` : Validasi format alamat email menggunakan `MailAddress`.
-- `ToTitleCase` : Mengubah teks menjadi format huruf kapital di setiap awal kata.
-- `TextToNumber` : Mengonversi teks angka menjadi tipe data `int`.
+Dengan menerapkan pola **Try-Pattern** (`TryCreate`), sistem memastikan bahwa tidak ada objek pengguna (`Person`) yang berhasil dibuat jika datanya tidak memenuhi standar keabsahan bisnis.
 
 ---
 
-### 2. Pendaftaran Pengguna (`Person.TryCreate`)
-Memproses pembuatan entitas `Person` dari `RegisterPersonRequest` dengan aturan validasi:
+## ✨ Fitur Utama
 
-- **Nama**: Tidak boleh kosong/null.
-- **Umur**: Harus berupa angka dalam rentang `1` sampai `99`.
-- **Email**: Harus sesuai dengan format surel yang valid.
-- **Counter**: Menambahkan nilai `TotalRegister` secara otomatis jika registrasi berhasil.
+* **Pembersihan & Pemformatan Nama Otomatis:** Mengubah input nama seperti `john DOE` menjadi format konsisten `John Doe` (*Title Case*).
+* **Validasi Usia Aman:** Memastikan usia berupa angka yang masuk akal (rentang antara 1 hingga 99 tahun).
+* **Verifikasi Format Email:** Memeriksa keabsahan format alamat email pengirim menggunakan pustaka standar .NET.
+* **Penghitung Registrasi Real-time:** Menghitung berapa banyak pengguna yang berhasil mendaftar selama aplikasi berjalan via properti statis.
+* **Ekspor JSON:** Menyediakan metode instan untuk mengubah data domain pengguna menjadi format teks JSON yang rapi.
 
 ---
 
-## 🚀 Cara Menjalankan
+## 🛠️ Arsitektur & Pustaka Terkait
 
-1. Pastikan [.NET SDK 8.0](https://dotnet.microsoft.com/) sudah terpasang.
-2. Jalankan perintah berikut dari direktori root repositori:
+| Komponen / Pustaka | Versi / Fungsi |
+| :--- | :--- |
+| **.NET SDK** | .NET 8.0 (atau lebih baru) |
+| **`System.Text.Json`** | Serialisasi data domain menjadi teks JSON |
+| **`Humanizer`** | Ekstensi bantuan pemformatan teks |
+| **`System.Net.Mail`** | Validasi struktur sintaks email |
+
+---
+
+## 🚀 Langkah Memulai (Getting Started)
+
+Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal Anda:
+
+### 1. Prasyarat
+Pastikan Anda sudah menginstal [.NET SDK](https://dotnet.microsoft.com/download) di perangkat Anda.
+
+### 2. Buka Terminal / Command Prompt
+Navigasikan direktori terminal Anda ke folder proyek `Day01-PersonRegistration`:
 
 ```bash
-dotnet run --project Day01-PersonRegistration
+cd lab/Day01-PersonRegistration
