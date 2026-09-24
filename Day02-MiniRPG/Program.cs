@@ -1,17 +1,15 @@
-﻿using RpgEngine.Test;
-using RpgEngine.Tests;
+﻿using System;
 
-namespace RpgEngine;
-
-class Program
+namespace RpgEngine
 {
-    static void Main(string[] args)
+    class Program
     {
-        // Panggil pengujian BaseCharacter
-        EffectTest.Run();
-
-        // Nanti kalau Hero & Monster sudah siap, tinggal panggil di sini:
-        // HeroTests.Run();
-        // MonsterTests.Run();
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Aplikasi MiniRPG Berhasil Dijalankan!");
+            
+            // Tempatkan logika utama game kamu di sini nanti,
+            // tidak perlu memanggil pengujian unit test di sini.
+        }
     }
 }

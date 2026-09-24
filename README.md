@@ -1,54 +1,70 @@
-# 🚀 C# & .NET Daily Learning Journey
+# C# & .NET Daily Learning Journey 🚧 Active Development
 
-Selamat datang di repositori **C# & .NET Daily Learning Journey**! Repositori ini berisi kumpulan *mini project*, latihan logika, dan eksplorasi konsep dasar hingga tingkat lanjut dalam pemrograman C# dan ekosistem .NET yang dikerjakan secara berkala.
-
-Setiap *folder* latihan harian dirancang secara independen untuk menguji dan menerapkan prinsip-prinsip *Clean Code*, Pemrograman Berorientasi Objek (OOP), hingga pengujian unit (*Unit Testing*).
-
----
-
-## 🎯 Tujuan Repositori
-
-* **Eksplorasi Konsep C#/.NET:** Memahami konsep inti seperti Enkapsulasi, Abstraksi, Inheritansi, Polimorfisme, *Interface*, hingga *Extension Methods*.
-* **Penerapan Praktik Terbaik:** Membiasakan penulisan kode yang rapi, *type-safe*, serta menggunakan *XML Documentation* (`///`).
-* **Pengujian Kode (Unit Testing):** Mengimplementasikan pengujian otomatis untuk memastikan logika bisnis berjalan sesuai ekspektasi.
-* **Portofolio Latihan:** Menjadi rekam jejak pembelajaran mandiri yang terstruktur dan mudah ditelusuri.
+> **Kategori:** Learning Repository / Console Applications / Mini Projects  
+> **Status Proyek:** Active Development  
+> **Target Pengguna:** C#/.NET Developers, Technical Recruiters, Peer Learners  
 
 ---
 
-## 🛠️ Requirements & Tech Stack
+## 💡 Gambaran Umum & Tujuan Bisnis
+Repositori ini berisi serangkaian modul latihan harian, eksplorasi arsitektur, serta implementasi logika bisnis berbasis **C# 12** dan **.NET 8.0**. Proyek ini dirancang untuk membangun pemahaman teknis mendalam secara bertahap (*incremental learning*) — mulai dari konsep fundamental Pemrograman Berorientasi Objek (OOP) hingga penerapan praktik pengujian terisolasi (*Unit Testing*) dan penulisan kode bersih (*Clean Code*).
 
-Sebelum menjalankan proyek di repositori ini, pastikan komputer Anda telah terpasang kebutuhan dasar berikut:
-
-| Alat / Teknologi | Keterangan / Versi |
-| :--- | :--- |
-| **Bahasa Pemrograman** | C# 12 / .NET 8.0 |
-| **Framework & SDK** | [.NET 8.0 SDK](https://dotnet.microsoft.com/download) (atau versi terbaru) |
-| **IDE / Editor** | Visual Studio Code / Visual Studio 2022 / JetBrains Rider |
-| **Paket Manajer** | NuGet |
+Setiap modul di dalam repositori ini menyimulasikan skenario dunia nyata untuk memberikan nilai tambah berikut:
+* **Keandalan Perangkat Lunak:** Memastikan logika bisnis tervalidasi dengan baik melalui pengujian otomatis (*Unit Testing*).
+* **Kemudahan Pemeliharaan (Maintainability):** Menerapkan arsitektur kode terstruktur yang memisahkan antara entitas utama dan pengujian.
+* **Standardisasi Industri:** Mengadopsi konvensi penulisan C# modern, penggunaan *Try-Pattern*, *type-safety*, serta *XML Documentation* (`///`).
 
 ---
 
-## 📂 Progress & Mini Projects
-
-Tabel di bawah ini mencatat perkembangan *mini project* harian. Klik nama proyek atau tautan direktori untuk melihat dokumentasi detail di masing-masing folder.
-
-| Day | Project Name | Konsep Utama / Key Features | Status | Link Folder |
-| :---: | :--- | :--- | :---: | :---: |
-| **01** | **Person Registration App** | *Try-Pattern*, *Encapsulation*, *Static Counter*, *Extension Methods*, *Title Case Formatting* | 🟢 Completed | [Day01-PersonRegistration](./lab/Day01-PersonRegistration) |
-| **02** | **MiniRPG Engine** | *Abstract Class*, *Polymorphism*, *Interfaces*, *Status Effects (Bleed, Stun, Regen)*, *Unit Testing* | 🟡 On Progress | [Day02-MiniRPG](./lab/Day02-MiniRPG) |
-<!-- Tambahkan baris baru di bawah ini setiap ada task baru -->
+## ✨ Fitur Utama (Key Features)
+- **Modular Learning Labs:** Setiap modul harian diisolasi dalam proyek tersendiri. - *Memudahkan penelusuran materi dan eksperimen fitur C# secara terfokus.*
+- **Automated Unit Testing:** Proyek pengujian terpisah untuk setiap modul lab. - *Meningkatkan kualitas kode serta mencegah terjadinya regresi logika.*
+- **Self-Documenting Code:** Penggunaan C# XML Comments (`///`) yang presisi di seluruh class dan method. - *Mempermudah navigasi API dan pemahaman arsitektur oleh developer lain.*
+- **Clean Architecture Principles:** Penerapan pola desain OOP, abstraksi, serta pemisahan tanggung jawab (*Separation of Concerns*). - *Membiasakan standar penulisan kode tingkat enterprise.*
 
 ---
 
-## 🏗️ Struktur Repository
+## 📐 Arsitektur & Tech Stack
 
-Berikut adalah susunan direktori utama di dalam repositori ini:
+### Tech Stack
+- **Runtime & Language:** .NET 8.0 | C# 12
+- **Core Libraries & Tools:** xUnit, NUnit, System.Text.Json, System.Math
 
-```text
-Snowball/
-├── learn-csharp.slnx           <-- Solution file utama
-├── README.md                   <-- Dokumentasi utama repositori (file ini)
-├── .gitignore                  <-- Konfigurasi pengabaian berkas Git
-└── lab/                        <-- Folder utama seluruh latihan harian
-    ├── Day01-PersonRegistration/
-    └── Day02-MiniRPG/
+### Konsep Arsitektur / OOP
+- **Object-Oriented Programming (OOP):** Penerapan Encapsulation, Polymorphism, Abstraction, dan Interfaces secara terstruktur.
+- **Design Patterns & Conventions:** Extension Methods, Try-Pattern, Static Counter, serta Unit Testing terisolasi.
+
+---
+
+## 🗓️ Catatan Perkembangan & 🚧 Progress Tracker (Work in Progress)
+
+### Catatan Perkembangan (Development History)
+* **Day 01 - Person Registration App:** Implementasi *Try-Pattern*, *Encapsulation*, *Static Counter*, *Extension Methods*, dan *Title Case Formatting*.
+* **Day 02 - MiniRPG Engine:** Implementasi *Abstract Class*, *Polymorphism*, *Interfaces*, dan *Status Effects* (`BleedEffect`, `RegenEffect`, `StunEffect`).
+
+### Daftar Status & Pending Features
+- [DONE] **Day 01 — Person Registration App:** Modul registrasi beserta pengujian unit (`PersonRegistration.Tests`).
+- [PENDING] **Day 02 — MiniRPG Engine (Abstraksi & Status Effects):** Implementasi `BaseCharacter`, `StatusEffect`, dan `StatusManager` beserta `MiniRPG.Tests`.
+
+---
+
+## 🚀 Panduan Memulai & Cara Menjelaskan Project
+
+### Prasyarat (Prerequisites)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) atau versi terbaru.
+- **IDE / Text Editor:** Visual Studio 2022 / JetBrains Rider / Visual Studio Code (dengan ekstensi C# Dev Kit).
+
+### Langkah Menjalankan & Menjelaskan Project
+1. **Persiapan Environment & Clone Repo:**
+   ```bash
+   git clone [https://github.com/username/repository-name.git](https://github.com/username/repository-name.git)
+   cd repository-name
+   dotnet build learn-csharp.slnx
+
+2. **Menjalankan Pengujian Unit (Unit Testing):**
+    ```bash
+        dotnet test
+
+2. **Menjalankan Aplikasi Utama:**
+    ```bash
+        dotnet run --project [folder project]

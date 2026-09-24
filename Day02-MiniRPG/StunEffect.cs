@@ -3,38 +3,47 @@ using System;
 namespace RpgEngine
 {
     /// <summary>
-    /// Merepresentasikan efek status kelumpuhan (<c>Stun</c>) yang menyebabkan karakter kehilangan giliran beraksi.
+    /// Mengelola efek status kelumpuhan (<c>Stun</c>) yang membatasi kemampuan bertindak karakter (*Crowd Control*) dengan menyebabkan karakter kehilangan giliran aksi (*turn*).
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Kelas ini merupakan turunan dari <see cref="StatusEffect"/> (menerapkan prinsip *Inheritance / IS-A*).
+    /// Kelas ini merupakan spesialisasi dari <see cref="StatusEffect"/> yang menerapkan prinsip *Inheritance / IS-A*.
     /// </para>
     /// <para>
-    /// Berbeda dengan <c>BleedEffect</c> atau <c>RegenEffect</c> yang mengubah nilai HP, <c>StunEffect</c> berfokus pada kontrol kondisi (*Crowd Control*).
-    /// Keberadaan kelas ini di dalam <see cref="StatusManager"/> akan memicu nilai <see cref="StatusManager.IsStunned"/> menjadi <c>true</c>.
+    /// Berbeda dengan efek modifikasi poin kesehatan seperti <c>BleedEffect</c> atau <c>RegenEffect</c>, <c>StunEffect</c> berfokus pada pengendalian status kondisi karakter. 
+    /// Keberadaan objek efek ini di dalam <see cref="StatusManager"/> secara otomatis mengaktifkan kondisi <see cref="StatusManager.IsStunned"/> menjadi <c>true</c> 
+    /// guna menghentikan fase eksekusi perintah karakter pada sistem pertarungan.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code>
+    /// var stun = new StunEffect(monsterTarget, duration: 1, maxDuration: 2);
+    /// character.StatusManager.AddEffect(stun);
+    /// </code>
+    /// </example>
     public class StunEffect : StatusEffect
     {
         /// <summary>
-        /// Menginisialisasi efek status kelumpuhan (<c>Stun</c>) baru dengan durasi giliran tertentu.
+        /// Membentuk instansi baru dari efek kelumpuhan (<see cref="StunEffect"/>) dengan menetapkan karakter target serta durasi giliran yang ditentukan.
         /// </summary>
-        /// <param name="duration">Jumlah giliran (*turn*) aktif di mana karakter akan terparalisis/kehilangan giliran.</param>
+        /// <param name="character">Subjek karakter (<see cref="BaseCharacter"/>) yang menjadi target penerima efek Stun.</param>
+        /// <param name="duration">Sisa durasi aktif efek kelumpuhan dalam hitungan giliran (*turn*).</param>
+        /// <param name="maxDuration">Batas maksimum akumulasi durasi giliran yang diizinkan untuk efek Stun ini.</param>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Dilempar melalui kelas induk <see cref="StatusEffect"/> jika nilai <paramref name="duration"/> bernilai negatif.
+        /// Dilempar melalui konstruktor kelas induk <see cref="StatusEffect"/> apabila nilai <paramref name="duration"/> atau <paramref name="maxDuration"/> bernilai negatif.
         /// </exception>
-        public StunEffect(int duration) : base("Stun", duration) { }
+        public StunEffect(BaseCharacter character, int duration, int maxDuration) : base(character, "Stun", duration, maxDuration) { }
 
         /// <summary>
-        /// Menjalankan pemrosesan khusus saat giliran karakter diperbarui.
+        /// Menerapkan dampak kelumpuhan terhadap karakter target pada saat pergantian giliran.
         /// </summary>
-        /// <param name="target">Objek karakter (<see cref="BaseCharacter"/>) yang sedang terkena efek Stun.</param>
+        /// <param name="target">Objek karakter (<see cref="BaseCharacter"/>) yang sedang dalam kondisi terparalisis/Stun.</param>
         /// <remarks>
         /// <para>
-        /// Metode ini sengaja dibiarkan kosong karena dampak dari efek Stun tidak mengubah poin kesehatan (HP) secara langsung di tiap giliran.
+        /// Implementasi metode ini sengaja dibiarkan kosong (*no-op*) karena efek Stun tidak merubah nilai numerik Atribut (seperti HP) secara bertahap di setiap giliran.
         /// </para>
         /// <para>
-        /// Pengecekan status lumpuh dilakukan secara terpusat oleh <see cref="StatusManager.IsStunned"/> saat sistem pertarungan (<c>BattleEngine</c>) mengecek apakah karakter boleh mengambil tindakan atau tidak.
+        /// Pemblokiran fase aksi dilakukan secara pasif melalui pengecekan status <see cref="StatusManager.IsStunned"/> pada mesin alur pertarungan (*BattleEngine*).
         /// </para>
         /// </remarks>
         public override void Apply(BaseCharacter target) { }

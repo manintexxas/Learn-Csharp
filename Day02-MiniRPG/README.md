@@ -1,48 +1,45 @@
-# ⚔️ Day 02 - MiniRPG Engine 🚧 (Work in Progress)
+# MiniRPG Engine 🚧 Work in Progress
 
-> **Catatan Proyek (Overtime Project):**  
-> Proyek ini berkembang menjadi proyek multi-tahap. Pengembangan diawali dari abstraksi entitas dasar karakter (Hari 1) hingga perluasan sistem efek status secara dinamis menggunakan interface dan komposisi objek (Hari 2).
+> **Kategori:** Console Application / Core Game Engine  
+> **Status Proyek:** Development (Work in Progress)  
+> **Target Pengguna:** Game Developer / Technical Assessor / Peer Learners  
 
 ---
 
-## 🎯 Gambaran Umum Proyek
-
+## 💡 Gambaran Umum & Tujuan Bisnis
 **MiniRPG Engine** adalah simulasi *Core Engine* permainan bertema *Turn-Based RPG* berbasis konsol C# (.NET 8). Proyek ini dirancang untuk melatih dan menguji penerapan tingkat menengah dari **Object-Oriented Programming (OOP)**, pemisahan logika (*Separation of Concerns*), serta pengujian unit (*Unit Testing*).
 
 Aplikasi ini menerima data konfigurasi karakter melalui format **JSON**, memprosesnya secara dinamis, serta menguji status dan efek pertarungan (seperti pendarahan, regenerasi, dan stun) selama pertarungan berlangsung.
 
 ---
 
-## 💡 Konsep OOP & Arsitektur Utama
-
-Proyek ini mendemonstrasikan hubungan antarkelas menggunakan dua prinsip utama OOP:
-1. **IS-A (Inheritance / Pewarisan):** `Hero` dan `Monster` adalah turunan dari `BaseCharacter`. Begitu pula `BleedEffect`, `RegenEffect`, dan `StunEffect` yang merupakan turunan dari `StatusEffect`.
-2. **HAS-A (Composition / Komposisi):** `BaseCharacter` memiliki pengelola efek (`StatusManager`), yang menampung kumpulan efek (`StatusEffect`) aktif pada karakter tersebut.
-
----
-
-## 🗓️ Catatan Perkembangan (Development History)
-
-### 🔹 Hari 1: Fondasi Entitas & Abstraksi (`BaseCharacter`)
-* **Abstraksi & Encapsulation:** Membuat *abstract class* `BaseCharacter` sebagai cetak biru seluruh karakter (Hero/Monster).
-* **Proteksi Nilai Sakelar (`Math.Clamp`):** Memastikan nilai kesehatan (`HealthPoint`) tidak pernah bernilai negatif atau melebihi batas maksimum (`MaxHealth`).
-* **Siklus Hidup Karakter:** Implementasi *read-only property* `IsAlive` serta metode *virtual* `TakeDamage()` dan `Heal()`.
-* **Polimorfisme:** Mendeklarasikan *abstract method* `UniqueSkill()` yang wajib diimplementasikan oleh kelas turunan.
-
-### 🔹 Hari 2: Sistem Efek Status (`Interface` & Komposisi)
-* **Penerapan Interface (`IUseable`):** Mendefinisikan kontrak perilaku untuk item atau efek yang dapat diaplikasikan/digunakan pada karakter.
-* **Efek Berkelanjutan (Status Effect System):**
-  * `StatusEffect` *(Abstract Base)*: Menjadi dasar seluruh efek status yang memiliki durasi giliran (*turns*).
-  * `BleedEffect` *(Damage Over Time)*: Mengurangi HP karakter di setiap giliran.
-  * `RegenEffect` *(Heal Over Time)*: Memulihkan HP karakter di setiap giliran.
-  * `StunEffect` *(Crowd Control)*: Menyebabkan karakter kehilangan giliran beraksi.
-* **Pengelola Efek (`StatusManager`):** Mengatur penambahan, pembaruan durasi, eksekusi efek, dan pembersihan efek yang telah habis masa berlakunya pada karakter.
-* **Pengujian Unit (`Test/`):** Penambahan *Unit Test* (`BaseCharacterTest.cs` dan `EffectTest.cs`) untuk memverifikasi logika HP dan efek status berjalan dengan tepat.
+## ✨ Fitur Utama (Key Features)
+- **Abstraksi & Proteksi Atribut Karakter (`BaseCharacter`):** Pengisolasian status poin kesehatan (`HealthPoint`) dengan `Math.Clamp` agar tidak bernilai negatif atau melebihi batas maksimum (`MaxHealth`), serta pemodelan siklus hidup (`IsAlive`, `TakeDamage`, `Heal`).
+- **Manajemen Efek Status Dinamis (`StatusEffect`):** Pengelolaan efek berkelanjutan berbasis giliran (*turns*) yang mencakup pendarahan (`BleedEffect`), regenerasi (`RegenEffect`), dan kelumpuhan (`StunEffect`).
+- **Pengelola Efek Terpusat (`StatusManager`):** Mengatur penambahan, pembaruan durasi, eksekusi dampak efek, dan pembersihan efek yang kadaluwarsa pada karakter secara terisolasi.
+- **Otomasi Pengujian Unit (`Test/`):** Pengujian unit otomatis (`BaseCharacterTest.cs` dan `EffectTest.cs`) untuk memverifikasi kalkulasi poin kesehatan dan durasi efek status berjalan presisi.
 
 ---
 
-## 🚧 Progress Tracker & Daftar Status (Pending Features)
+## 📐 Arsitektur & Tech Stack
 
+### Tech Stack
+- **Runtime & Language:** .NET 8.0 | C# 12
+- **Core Libraries & Tools:** `System.Text.Json` (pembacaan dan deserialisasi data DTO karakter), `System.Math` (`Math.Clamp` untuk isolasi nilai atribut numerik)
+
+### Konsep Arsitektur / OOP
+- **IS-A (Inheritance / Pewarisan):** `Hero` dan `Monster` adalah turunan dari `BaseCharacter`. Kelas `BleedEffect`, `RegenEffect`, dan `StunEffect` merupakan turunan dari `StatusEffect`.
+- **HAS-A (Composition / Komposisi):** `BaseCharacter` memiliki pengelola efek (`StatusManager`), yang menampung koleksi efek (`StatusEffect`) aktif pada karakter tersebut.
+
+---
+
+## 🗓️ Catatan Perkembangan & 🚧 Progress Tracker (Work in Progress)
+
+### Catatan Perkembangan (Development History)
+* **Hari 1:** Fondasi Entitas & Abstraksi (`BaseCharacter`, proteksi `Math.Clamp`, siklus hidup karakter, dan deklarasi method abstrak `UniqueSkill()`).
+* **Hari 2:** Sistem Efek Status (`IUseable`, `StatusEffect`, `BleedEffect`, `RegenEffect`, `StunEffect`, `StatusManager`, serta penambahan Unit Test).
+
+### Daftar Status & Pending Features
 - [x] **Hari 1 — Abstraksi Dasar:** `BaseCharacter.cs` & validasi proteksi HP (`Math.Clamp`).
 - [x] **Hari 2 — Sistem Efek Status:** `IUseable.cs`, `StatusEffect.cs`, `StatusManager.cs`, serta kelas efek spesifik (`Bleed`, `Regen`, `Stun`).
 - [x] **Hari 2 — Pengujian Unit:** Pembuatan pengujian otomatis di direktori `Test/`.
@@ -52,18 +49,3 @@ Proyek ini mendemonstrasikan hubungan antarkelas menggunakan dua prinsip utama O
 - [ ] **Pending Step 4 — Turn-Based Battle Engine:** Pembuatan `BattleSystem.cs` untuk mengelola alur giliran bertarung antar karakter hingga salah satu kalah.
 
 ---
-
-## 📦 Pustaka & Dependensi
-
-* **`System.Text.Json`** *(Untuk integrasi lanjutan)*: Membaca dan mengonversi masukan teks JSON menjadi data DTO karakter.
-* **`System.Math`**: Digunakan pada metode `Math.Clamp` guna menjaga konsistensi kalkulasi statistik karakter.
-
----
-
-## 🚀 Cara Menjalankan & Pengujian
-
-### 1. Menjalankan Simulasi Utama
-Pastikan Anda berada di direktori root repositori, lalu jalankan perintah:
-
-```bash
-dotnet run --project lab/Day02-MiniRPG

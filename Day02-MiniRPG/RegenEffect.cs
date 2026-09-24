@@ -3,42 +3,50 @@ using System;
 namespace RpgEngine
 {
     /// <summary>
-    /// Merepresentasikan efek status pemulihan (<c>Regen</c>) yang memberikan pemulihan kesehatan (*heal*) secara berkala kepada karakter di setiap giliran (*turn*).
+    /// Mengelola efek status pemulihan (<c>Regen</c>) yang memberikan peningkatan poin kesehatan secara berkala (*Heal over Time*) pada setiap giliran aksi karakter.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Kelas ini merupakan turunan dari <see cref="StatusEffect"/> (menerapkan prinsip *Inheritance / IS-A*).
+    /// Kelas ini merupakan spesialisasi dari <see cref="StatusEffect"/> yang menerapkan prinsip *Inheritance / IS-A*.
     /// </para>
     /// <para>
-    /// Berbeda dengan pendarahan (<c>BleedEffect</c>) yang mengurangi darah, efek ini berfokus pada regenerasi poin kesehatan 
-    /// dengan memicu metode <see cref="BaseCharacter.Heal(int)"/> di setiap giliran aktifnya.
+    /// Berbeda dengan efek pendarahan (<see cref="BleedEffect"/>) yang mengurangi kesehatan, efek ini bertindak sebagai mekanisme dukungan (*support*) 
+    /// dengan memicu pemanggilan <see cref="BaseCharacter.Heal(int)"/> secara otomatis untuk memulihkan kondisi target hingga batas maksimum kesehatannya.
     /// </para>
     /// </remarks>
+    /// <example>
+    /// <code>
+    /// var regen = new RegenEffect(hero, duration: 3, maxDuration: 5, healthAmount: 15);
+    /// regen.Apply(hero); // Memulihkan 15 HP pada karakter hero
+    /// </code>
+    /// </example>
     public class RegenEffect : StatusEffect
     {
-        private int _healtAmount;
+        private int _healthAmount;
 
         /// <summary>
-        /// Jumlah poin pemulihan kesehatan (HP) yang akan diberikan kepada karakter di setiap giliran.
+        /// Besaran nilai pemulihan poin kesehatan (*heal*) yang diberikan kepada karakter target pada setiap giliran.
         /// </summary>
         /// <value>
-        /// Nilai selalu dienkapsulasi agar bernilai minimal <c>1</c> untuk memastikan efek regenerasi selalu memberikan pemulihan yang valid.
+        /// Angka bulat (<see cref="int"/>) yang selalu dienkapsulasi agar bernilai minimal <c>1</c> untuk menjamin efek pemulihan memberikan dampak nyata.
         /// </value>
         public int HealthAmount
         {
-            get => _healtAmount;
-            private set => _healtAmount = Math.Max(1, value);
+            get => _healthAmount;
+            private set => _healthAmount = Math.Max(1, value);
         }
 
         /// <summary>
-        /// Menginisialisasi efek status regenerasi baru dengan durasi giliran dan besaran pemulihan tertentu.
+        /// Membentuk instansi baru dari efek pemulihan (<see cref="RegenEffect"/>) dengan batas durasi dan besaran regenerasi yang ditentukan.
         /// </summary>
-        /// <param name="duration">Jumlah giliran (*turn*) aktif untuk efek pemulihan ini.</param>
-        /// <param name="healthAmount">Jumlah poin kesehatan yang dipulihkan per giliran (harus bernilai minimal 1).</param>
+        /// <param name="character">Subjek karakter (<see cref="BaseCharacter"/>) yang menjadi target penerima efek pemulihan.</param>
+        /// <param name="duration">Sisa durasi aktif efek pemulihan dalam hitungan giliran (*turn*).</param>
+        /// <param name="maxDuration">Batas maksimum akumulasi durasi giliran yang diizinkan untuk efek ini.</param>
+        /// <param name="healthAmount">Jumlah poin kesehatan yang dipulihkan pada setiap giliran (minimal bernilai 1).</param>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// Dilempar jika parameter <paramref name="healthAmount"/> yang dimasukkan bernilai kurang dari 1.
+        /// Dilempar apabila nilai parameter <paramref name="healthAmount"/> yang diberikan kurang dari 1.
         /// </exception>
-        public RegenEffect(int duration, int healthAmount) : base("Regen", duration)
+        public RegenEffect(BaseCharacter character, int duration, int maxDuration,int healthAmount) : base(character, "Regen", duration, maxDuration)
         {
             if (healthAmount < 1) 
             { 
@@ -49,11 +57,12 @@ namespace RpgEngine
         }
 
         /// <summary>
-        /// Eksekusi langsung efek regenerasi terhadap target karakter.
+        /// Menerapkan eksekusi dampak regenerasi secara langsung terhadap kondisi kesehatan karakter target.
         /// </summary>
-        /// <param name="target">Objek karakter (<see cref="BaseCharacter"/>) yang sedang menerima efek pemulihan.</param>
+        /// <param name="target">Objek karakter (<see cref="BaseCharacter"/>) yang mengalami pemulihan poin kesehatan akibat efek regenerasi.</param>
         /// <remarks>
-        /// Metode ini di-override dari kelas induk <see cref="StatusEffect"/> untuk memicu <see cref="BaseCharacter.Heal(int)"/> sesuai dengan nilai <see cref="HealthAmount"/>.
+        /// Metode ini meng-override <see cref="StatusEffect.Apply(BaseCharacter)"/> untuk mengeksekusi metode <see cref="BaseCharacter.Heal(int)"/> 
+        /// dengan memasukkan nilai <see cref="HealthAmount"/>.
         /// </remarks>
         public override void Apply(BaseCharacter target)
         {
